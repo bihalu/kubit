@@ -90,6 +90,7 @@ spec:
           defaultMode: 420
           name: bitcoin-conf
 ---
+apiVersion: v1
 kind: Service
 metadata:
   labels:

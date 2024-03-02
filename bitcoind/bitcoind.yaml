@@ -23,7 +23,7 @@ metadata:
   namespace: bitcoin
 spec:
   accessModes:
-  - ReadWrite
+  - ReadWriteOnce
   resources:
     requests:
       storage: 900Gi

@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bitcoin
+  labels:
+    app: bitcoind
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bitcoin-conf
+  namespace: bitcoin
+data:
+  bitcoin.conf: |
+    txindex=1
+    server=1
+    rpcuser=mempool
+    rpcpassword=mempool
+    rpcbind=0.0.0.0
+    rpcallowip=0.0.0.0/0
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: bitcoind
+  name: bitcoind-pvc
+  namespace: bitcoin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 900Gi
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoind
+  namespace: bitcoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoind
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: bitcoind
+    spec:
+      containers:
+        - image: lncm/bitcoind:v26.0
+          name: bitcoind
+          ports:
+            - containerPort: 8332
+            - containerPort: 8333
+            - containerPort: 28332
+            - containerPort: 28333
+          resources: {}
+          volumeMounts:
+            - name: bitcoind-vol
+              mountPath: /data/.bitcoin
+            - name: bitcoin-conf
+              mountPath: /data/.bitcoin/bitcoin.conf
+              subPath: bitcoin.conf
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 930
+      volumes:apiVersion: v1
+---
+kind: Service
+metadata:
+  labels:
+    app: bitcoind
+  name: bitcoind
+  namespace: bitcoin
+spec:
+  type: NodePort
+  ports:
+    - name: "8332"
+      port: 8332
+      targetPort: 8332
+      nodePort: 30332
+    - name: "8333"
+      port: 8333
+      targetPort: 8333
+      nodePort: 30333
+    - name: "28332"
+      port: 28332
+      targetPort: 28332
+      nodePort: 32332
+    - name: "28333"
+      port: 28333
+      targetPort: 28333
+      nodePort: 32333
+  selector:
+    app: bitcoind
+        - name: bitcoind-vol
+          persistentVolumeClaim:
+            claimName: bitcoind-pvc
+        - name: bitcoin-conf
+          configMap:
+            name: bitcoin-conf

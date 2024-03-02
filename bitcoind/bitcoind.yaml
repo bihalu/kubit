@@ -23,7 +23,7 @@ metadata:
   namespace: bitcoin
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
       storage: 900Gi
@@ -88,19 +88,19 @@ spec:
   selector:
     app: bitcoind
   ports:
-  - name: "rpc"
+  - name: rpc
     port: 8332
     targetPort: 8332
     nodePort: 30332
-  - name: "p2p"
+  - name: p2p
     port: 8333
     targetPort: 8333
     nodePort: 30333
-  - name: "zmqblock"
+  - name: zmqblock
     port: 28332
     targetPort: 28332
     nodePort: 32332
-  - name: "zmqtx"
+  - name: zmqtx
     port: 28333
     targetPort: 28333
     nodePort: 32333

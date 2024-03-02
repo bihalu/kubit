@@ -50,7 +50,7 @@ spec:
         - name: ELECTRS_ELECTRUM_RPC_ADDR
           value: "0.0.0.0:50001"
         - name: ELECTRS_SERVER_BANNER
-          value: "Umbrel Electrs 1234"
+          value: "Umbrel Electrs v0.10.2"
         - name: ELECTRS_DB_DIR
           value: "/data/db"
         resources: {}

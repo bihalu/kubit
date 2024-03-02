@@ -20,6 +20,15 @@ data:
     rpcallowip=0.0.0.0/0
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: bitcoin-conf
+  namespace: bitcoin
+data:
+  bitcoin.conf: dHhpbmRleD0xCnNlcnZlcj0xCnJwY3VzZXI9Q2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZQpycGNwYXNzd29yZD0xZXJqYW52aWVyMTk1NgpycGNiaW5kPTAuMC4wLjAKcnBjYWxsb3dpcD0wLjAuMC4wLzAK
+type: Opaque
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
@@ -28,10 +37,11 @@ metadata:
   namespace: bitcoin
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 900Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,23 +60,35 @@ spec:
         app: bitcoind
     spec:
       containers:
-        - image: lncm/bitcoind:v26.0
-          name: bitcoind
-          ports:
-            - containerPort: 8332
-            - containerPort: 8333
-            - containerPort: 28332
-            - containerPort: 28333
-          resources: {}
-          volumeMounts:
-            - name: bitcoind-vol
-              mountPath: /data/.bitcoin
-            - name: bitcoin-conf
-              mountPath: /data/.bitcoin/bitcoin.conf
-              subPath: bitcoin.conf
+      - image: lncm/bitcoind:v26.0
+        imagePullPolicy: IfNotPresent
+        name: bitcoind
+        ports:
+        - containerPort: 8332
+          protocol: TCP
+        - containerPort: 8333
+          protocol: TCP
+        - containerPort: 28332
+          protocol: TCP
+        - containerPort: 28333
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - name: bitcoind-vol
+          mountPath: /data/.bitcoin
+        - name: bitcoin-conf
+          mountPath: /data/.bitcoin/bitcoin.conf
+          subPath: bitcoin.conf
       restartPolicy: Always
       terminationGracePeriodSeconds: 930
-      volumes:apiVersion: v1
+      volumes:
+      - name: bitcoind-vol
+        persistentVolumeClaim:
+          claimName: bitcoind-pvc
+      - name: bitcoin-conf
+        configMap:
+          defaultMode: 420
+          name: bitcoin-conf
 ---
 kind: Service
 metadata:
@@ -76,28 +98,23 @@ metadata:
   namespace: bitcoin
 spec:
   type: NodePort
-  ports:
-    - name: "8332"
-      port: 8332
-      targetPort: 8332
-      nodePort: 30332
-    - name: "8333"
-      port: 8333
-      targetPort: 8333
-      nodePort: 30333
-    - name: "28332"
-      port: 28332
-      targetPort: 28332
-      nodePort: 32332
-    - name: "28333"
-      port: 28333
-      targetPort: 28333
-      nodePort: 32333
   selector:
     app: bitcoind
-        - name: bitcoind-vol
-          persistentVolumeClaim:
-            claimName: bitcoind-pvc
-        - name: bitcoin-conf
-          configMap:
-            name: bitcoin-conf
+  ports:
+  - name: "rpc"
+    port: 8332
+    targetPort: 8332
+    nodePort: 30332
+  - name: "p2p"
+    port: 8333
+    targetPort: 8333
+    nodePort: 30333
+  - name: "zmqblock"
+    port: 28332
+    targetPort: 28332
+    nodePort: 32332
+  - name: "zmqtx"
+    port: 28333
+    targetPort: 28333
+    nodePort: 32333
+  

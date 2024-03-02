@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: electrs
+  name: electrs-pvc
+  namespace: bitcoin
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: electrs
+  namespace: bitcoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: electrs
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: electrs
+    spec:
+      containers:
+      - image: getumbrel/electrs:v0.10.2
+        imagePullPolicy: IfNotPresent
+        name: electrs
+        ports:
+        - containerPort: 50001
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "3005"
+        - name: ELECTRS_LOG_FILTERS
+          value: "INFO"
+        - name: ELECTRS_NETWORK
+          value: ""
+        - name: ELECTRS_DAEMON_RPC_ADDR
+          value: "bitcoind:8332"
+        - name: ELECTRS_DAEMON_P2P_ADDR
+          value: "bitcoind:8333"
+        - name: ELECTRS_ELECTRUM_RPC_ADDR
+          value: "0.0.0.0:50001"
+        - name: ELECTRS_SERVER_BANNER
+          value: "Umbrel Electrs 1234"
+        - name: ELECTRS_DB_DIR
+          value: "/data/db"
+        resources: {}
+        volumeMounts:
+        - name: electrs-vol
+          mountPath: /data
+        - name: bitcoind-vol
+          mountPath: /data/.bitcoin
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: bitcoind-vol
+        persistentVolumeClaim:
+          claimName: bitcoind-pvc
+      - name: electrs-vol
+        persistentVolumeClaim:
+          claimName: electrs-pvc

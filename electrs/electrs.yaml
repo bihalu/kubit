@@ -42,7 +42,7 @@ spec:
         - name: ELECTRS_LOG_FILTERS
           value: "INFO"
         - name: ELECTRS_NETWORK
-          value: ""
+          value: "bitcoin"
         - name: ELECTRS_DAEMON_RPC_ADDR
           value: "bitcoind:8332"
         - name: ELECTRS_DAEMON_P2P_ADDR

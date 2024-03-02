@@ -1,0 +1,2 @@
+# kubit
+Kubernetes Bitcoin Fullnode

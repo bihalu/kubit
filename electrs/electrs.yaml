@@ -10,7 +10,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 90Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,19 +30,19 @@ spec:
         app: electrs
     spec:
       containers:
-      - image: getumbrel/electrs:v0.10.2
+      - image: philipcristiano/electrs:v0.10.3
         imagePullPolicy: IfNotPresent
         name: electrs
         ports:
         - containerPort: 50001
           protocol: TCP
         env:
-        - name: PORT
-          value: "3005"
         - name: ELECTRS_LOG_FILTERS
           value: "INFO"
         - name: ELECTRS_NETWORK
           value: "bitcoin"
+        - name: ELECTRS_AUTH
+          value: "ChristineMadeleineOdetteLallouette:1erjanvier1956"
         - name: ELECTRS_DAEMON_RPC_ADDR
           value: "bitcoind:8332"
         - name: ELECTRS_DAEMON_P2P_ADDR
@@ -50,21 +50,15 @@ spec:
         - name: ELECTRS_ELECTRUM_RPC_ADDR
           value: "0.0.0.0:50001"
         - name: ELECTRS_SERVER_BANNER
-          value: "Umbrel Electrs v0.10.2"
+          value: "electrs v0.10.3"
         - name: ELECTRS_DB_DIR
           value: "/data/db"
         resources: {}
         volumeMounts:
         - name: electrs-vol
           mountPath: /data
-        - name: bitcoind-vol
-          mountPath: /data/.bitcoin
-          readOnly: true
       restartPolicy: Always
       volumes:
-      - name: bitcoind-vol
-        persistentVolumeClaim:
-          claimName: bitcoind-pvc
       - name: electrs-vol
         persistentVolumeClaim:
           claimName: electrs-pvc

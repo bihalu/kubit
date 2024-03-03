@@ -41,7 +41,7 @@ spec:
           value: "INFO"
         - name: ELECTRS_NETWORK
           value: "bitcoin"
-        - name: ELECTRS_AUTH
+        - name: ELECTRS_DAEMON_AUTH
           value: "ChristineMadeleineOdetteLallouette:1erjanvier1956"
         - name: ELECTRS_DAEMON_RPC_ADDR
           value: "bitcoind:8332"

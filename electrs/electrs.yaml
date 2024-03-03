@@ -12,7 +12,6 @@ spec:
     requests:
       storage: 90Gi
 ---
----
 apiVersion: v1
 kind: Secret
 metadata:
@@ -21,7 +20,6 @@ metadata:
 data:
   config.toml: bG9nX2ZpbHRlcnMgPSAiSU5GTyIKbmV0d29yayA9ICJiaXRjb2luIgpkYWVtb25fcnBjX2FkZHIgPSAiYml0Y29pbmQ6ODMzMiIKZGFlbW9uX3AycF9hZGRyID0gImJpdGNvaW5kOjgzMzMiCmVsZWN0cnVtX3JwY19hZGRyID0gIjAuMC4wLjA6NTAwMDEiCnNlcnZlcl9iYW5uZXIgPSAiZWxlY3RycyB2MC4xMC4zIgpkYl9kaXIgPSAiL2RhdGEvZGIiCmF1dGggPSAiQ2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZToxZXJqYW52aWVyMTk1NiIK
 type: Opaque
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -48,22 +46,6 @@ spec:
         - containerPort: 50001
           protocol: TCP
         env:
-#        - name: ELECTRS_LOG_FILTERS
-#          value: "INFO"
-#        - name: ELECTRS_NETWORK
-#          value: "bitcoin"
-#        - name: ELECTRS_COOKIE_FILE
-#          value: "/data/.cookie"
-#        - name: ELECTRS_DAEMON_RPC_ADDR
-#          value: "bitcoind:8332"
-#        - name: ELECTRS_DAEMON_P2P_ADDR
-#          value: "bitcoind:8333"
-#        - name: ELECTRS_ELECTRUM_RPC_ADDR
-#          value: "0.0.0.0:50001"
-#        - name: ELECTRS_SERVER_BANNER
-#          value: "electrs v0.10.3"
-#        - name: ELECTRS_DB_DIR
-#          value: "/data/db"
         resources: {}
         volumeMounts:
         - name: electrs-vol
@@ -80,4 +62,3 @@ spec:
       - name: electrs-conf
         secret:
           secretName: electrs-conf
-

@@ -12,6 +12,17 @@ spec:
     requests:
       storage: 90Gi
 ---
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: electrs-toml
+  namespace: bitcoin
+data:
+  electrs.toml: dHhpbmRleD0xCnNlcnZlcj0xCnJwY3VzZXI9Q2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZQpycGNwYXNzd29yZD0xZXJqYW52aWVyMTk1NgpycGNiaW5kPTAuMC4wLjAKcnBjYWxsb3dpcD0wLjAuMC4wLzAK
+type: Opaque
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,28 +48,36 @@ spec:
         - containerPort: 50001
           protocol: TCP
         env:
-        - name: ELECTRS_LOG_FILTERS
-          value: "INFO"
-        - name: ELECTRS_NETWORK
-          value: "bitcoin"
-        - name: ELECTRS_DAEMON_AUTH
-          value: "ChristineMadeleineOdetteLallouette:1erjanvier1956"
-        - name: ELECTRS_DAEMON_RPC_ADDR
-          value: "bitcoind:8332"
-        - name: ELECTRS_DAEMON_P2P_ADDR
-          value: "bitcoind:8333"
-        - name: ELECTRS_ELECTRUM_RPC_ADDR
-          value: "0.0.0.0:50001"
-        - name: ELECTRS_SERVER_BANNER
-          value: "electrs v0.10.3"
-        - name: ELECTRS_DB_DIR
-          value: "/data/db"
+#        - name: ELECTRS_LOG_FILTERS
+#          value: "INFO"
+#        - name: ELECTRS_NETWORK
+#          value: "bitcoin"
+#        - name: ELECTRS_COOKIE_FILE
+#          value: "/data/.cookie"
+#        - name: ELECTRS_DAEMON_RPC_ADDR
+#          value: "bitcoind:8332"
+#        - name: ELECTRS_DAEMON_P2P_ADDR
+#          value: "bitcoind:8333"
+#        - name: ELECTRS_ELECTRUM_RPC_ADDR
+#          value: "0.0.0.0:50001"
+#        - name: ELECTRS_SERVER_BANNER
+#          value: "electrs v0.10.3"
+#        - name: ELECTRS_DB_DIR
+#          value: "/data/db"
         resources: {}
         volumeMounts:
         - name: electrs-vol
           mountPath: /data
+        - name: electrs-toml
+          mountPath: /data/electrs.toml
+          subPath: electrs.toml
+          readOnly: true
       restartPolicy: Always
       volumes:
       - name: electrs-vol
         persistentVolumeClaim:
           claimName: electrs-pvc
+      - name: electrs-toml
+        secret:
+          secretName: electrs-toml
+

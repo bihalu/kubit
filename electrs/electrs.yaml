@@ -30,7 +30,7 @@ spec:
         app: electrs
     spec:
       containers:
-      - image: philipcristiano/electrs:v0.10.3
+      - image: philipcristiano/electrs:0.10.3
         imagePullPolicy: IfNotPresent
         name: electrs
         ports:

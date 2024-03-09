@@ -79,3 +79,27 @@ spec:
     port: 50001
     targetPort: 50001
     nodePort: 30001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+  name: electrs-tls
+  namespace: bitcoin
+spec:
+  tls:
+  - hosts:
+      - 192.168.178.19
+    secretName: electrs-tls
+  rules:
+  - host: 192.168.178.19
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: electrs
+            port:
+              number: 50001

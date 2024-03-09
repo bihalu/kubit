@@ -90,10 +90,10 @@ metadata:
 spec:
   tls:
   - hosts:
-      - 192.168.178.19
+      - electrs.local
     secretName: electrs-tls
   rules:
-  - host: 192.168.178.19
+  - host: electrs.local
     http:
       paths:
       - path: /

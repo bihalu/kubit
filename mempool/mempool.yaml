@@ -37,14 +37,93 @@ spec:
         - containerPort: 3306
           protocol: TCP
         env:
-        - name: MARIADB_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          value: mempool
+        - name: MYSQL_USER
+          value: mempool
+        - name: MYSQL_PASSWORD
+          value: mempool
+        - name: MYSQL_ROOT_PASSWORD
           value: topsecret
         resources: {}
         volumeMounts:
         - name: mempool-db-vol
           mountPath: /var/lib/mysql
       restartPolicy: Always
+      terminationGracePeriodSeconds: 60
       volumes:
       - name: mempool-db-vol
         persistentVolumeClaim:
           claimName: mempool-db-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: mempool-backend
+  name: mempool-backend-pvc
+  namespace: bitcoin
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mempool-backend
+  namespace: bitcoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mempool-backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mempool-backend
+    spec:
+      containers:
+      - image: mempool/backend:latest
+        imagePullPolicy: IfNotPresent
+        name: mempool-backend
+        ports:
+        - containerPort: 8999
+          protocol: TCP
+        env:
+        - name: MEMPOOL_BACKEND
+          value: "none"
+        - name: CORE_RPC_HOST
+          value: "bitcoind"
+        - name: CORE_RPC_PORT
+          value: "8332"
+        - name: CORE_RPC_USERNAME
+          value: "ChristineMadeleineOdetteLallouette"
+        - name: CORE_RPC_PASSWORD
+          value: "1erjanvier1956"
+        - name: DATABASE_ENABLED
+          value: "true"
+        - name: DATABASE_HOST
+          value: "mempool-db"
+        - name: DATABASE_DATABASE
+          value: "mempool"
+        - name: DATABASE_USERNAME
+          value: "mempool"
+        - name: DATABASE_PASSWORD
+          value: "mempool"
+        - name: STATISTICS_ENABLED
+          value: "true"
+        resources: {}
+        volumeMounts:
+        - name: mempool-backend-vol
+          mountPath: /backend/cache
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: mempool-backend-vol
+        persistentVolumeClaim:
+          claimName: mempool-backend-pvc

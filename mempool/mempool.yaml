@@ -103,7 +103,7 @@ spec:
         app: mempool-backend
     spec:
       containers:
-      - image: mempool/backend:latest
+      - image: mempool/backend:v2.5.1
         imagePullPolicy: IfNotPresent
         name: mempool-backend
         ports:
@@ -176,7 +176,7 @@ spec:
         app: mempool-frontend
     spec:
       containers:
-      - image: mempool/prontend:latest
+      - image: mempool/frontend:v2.5.1
         imagePullPolicy: IfNotPresent
         name: mempool-frontend
         ports:

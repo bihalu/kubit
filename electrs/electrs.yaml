@@ -62,3 +62,20 @@ spec:
       - name: electrs-conf
         secret:
           secretName: electrs-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: electrs
+  name: electrs
+  namespace: bitcoin
+spec:
+  type: NodePort
+  selector:
+    app: electrs
+  ports:
+  - name: rpc
+    port: 50001
+    targetPort: 50001
+    nodePort: 30001

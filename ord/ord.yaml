@@ -30,7 +30,7 @@ spec:
         app: ord
     spec:
       containers:
-      - image: hirosystems/ordinals-api
+      - image: bihalu/ord:0.16.0
         imagePullPolicy: IfNotPresent
         name: ord
         command: 

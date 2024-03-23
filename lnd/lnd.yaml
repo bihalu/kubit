@@ -18,7 +18,7 @@ metadata:
   name: lnd-conf
   namespace: bitcoin
 data:
-  lnd.conf: W0JpdGNvaW5dCmJpdGNvaW4ubm9kZT1iaXRjb2luZApiaXRjb2luLmFjdGl2ZT10cnVlCmJpdGNvaW4ubWFpbm5ldD10cnVlCgpbQml0Y29pbmRdCmJpdGNvaW5kLnJwY2hvc3Q9Yml0Y29pbmQ6ODMzMgpiaXRjb2luZC5ycGN1c2VyPUNocmlzdGluZU1hZGVsZWluZU9kZXR0ZUxhbGxvdWV0dGUKYml0Y29pbmQucnBjcGFzcz0xZXJqYW52aWVyMTk1NgpiaXRjb2luZC56bXFwdWJyYXdibG9jaz10Y3A6Ly9iaXRjb2luZDoyODMzMgpiaXRjb2luZC56bXFwdWJyYXd0eD10Y3A6Ly9iaXRjb2luZDoyODMzMwpiaXRjb2luZC5lc3RpbWF0ZW1vZGU9Q09OU0VSVkFUSVZFCg==
+  lnd.conf: W0FwcGxpY2F0aW9uIE9wdGlvbnNdCmxpc3Rlbj0wLjAuMC4wOjk3MzUKcnBjbGlzdGVuPTAuMC4wLjA6MTAwMDkKcmVzdGxpc3Rlbj0wLjAuMC4wOjgwODAKCltCaXRjb2luXQpiaXRjb2luLm5vZGU9Yml0Y29pbmQKYml0Y29pbi5hY3RpdmU9dHJ1ZQpiaXRjb2luLm1haW5uZXQ9dHJ1ZQoKW0JpdGNvaW5kXQpiaXRjb2luZC5ycGNob3N0PWJpdGNvaW5kOjgzMzIKYml0Y29pbmQucnBjdXNlcj1DaHJpc3RpbmVNYWRlbGVpbmVPZGV0dGVMYWxsb3VldHRlCmJpdGNvaW5kLnJwY3Bhc3M9MWVyamFudmllcjE5NTYKYml0Y29pbmQuem1xcHVicmF3YmxvY2s9dGNwOi8vYml0Y29pbmQ6MjgzMzIKYml0Y29pbmQuem1xcHVicmF3dHg9dGNwOi8vYml0Y29pbmQ6MjgzMzMKYml0Y29pbmQuZXN0aW1hdGVtb2RlPUNPTlNFUlZBVElWRQo=
 type: Opaque
 ---
 apiVersion: apps/v1
@@ -46,6 +46,8 @@ spec:
         - containerPort: 10009
           protocol: TCP
         - containerPort: 9735
+          protocol: TCP
+        - containerPort: 8080
           protocol: TCP
         resources: {}
         volumeMounts:
@@ -85,4 +87,8 @@ spec:
     port: 9735
     targetPort: 9735
     nodePort: 30735
+  - name: rest
+    port: 8080
+    targetPort: 8080
+    nodePort: 30808
   

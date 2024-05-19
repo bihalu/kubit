@@ -1,0 +1,99 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: rpc-bitcoin
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rpc-bitcoin.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: bitcoind
+            port:
+              number: 8332
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - rpc-bitcoin.schmuckele.nl
+    secretName: rpc-bitcoin.schmuckele.nl-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: p2p-bitcoin
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: p2p-bitcoin.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: bitcoind
+            port:
+              number: 8333
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - p2p-bitcoin.schmuckele.nl
+    secretName: p2p-bitcoin.schmuckele.nl-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: zmqblock-bitcoin
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: zmqblock-bitcoin.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: bitcoind
+            port:
+              number: 28332
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - zmqblock-bitcoin.schmuckele.nl
+    secretName: zmqblock-bitcoin.schmuckele.nl-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: zmqtx-bitcoin
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: zmqtx-bitcoin.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: bitcoind
+            port:
+              number: 28333
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - zmqtx-bitcoin.schmuckele.nl
+    secretName: zmqtx-bitcoin.schmuckele.nl-tls

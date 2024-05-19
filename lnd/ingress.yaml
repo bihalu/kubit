@@ -1,0 +1,74 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: p2p-lightning
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: p2p-lightning.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: lnd
+            port:
+              number: 9735
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - p2p-lightning.schmuckele.nl
+    secretName: p2p-lightning.schmuckele.nl-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: rpc-lightning
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rpc-lightning.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: lnd
+            port:
+              number: 10009
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - rpc-lightning.schmuckele.nl
+    secretName: rpc-lightning.schmuckele.nl-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: rest-lightning
+  namespace: bitcoin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rest-lightning.schmuckele.nl
+    http:
+      paths:
+      - backend:
+          service:
+            name: lnd
+            port:
+              number: 8080
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - rest-lightning.schmuckele.nl
+    secretName: rest-lightning.schmuckele.nl-tls

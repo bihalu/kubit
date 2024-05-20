@@ -18,3 +18,19 @@ data:
 type: Opaque
 EOF
 ```
+
+## bitcoin chainquery
+https://chainquery.com/bitcoin-cli#
+
+## bitcoin cli
+https://github.com/BlockchainCommons/Learning-Bitcoin-from-the-Command-Line/blob/master/03_2_Knowing_Your_Bitcoin_Setup.md#optional-know-your-bitcoin-info
+
+```
+ bitcoin-cli -getinfo
+
+ bitcoin-cli -netinfo 4
+
+ bitcoin-cli -addrinfo
+
+ bitcoin-cli -version
+```

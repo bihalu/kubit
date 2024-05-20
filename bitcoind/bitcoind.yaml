@@ -11,7 +11,7 @@ metadata:
   name: bitcoin-conf
   namespace: bitcoin
 data:
-  bitcoin.conf: dHhpbmRleD0xCnNlcnZlcj0xCnJwY3VzZXI9Q2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZQpycGNwYXNzd29yZD0xZXJqYW52aWVyMTk1NgpycGNiaW5kPTAuMC4wLjAKcnBjYWxsb3dpcD0wLjAuMC4wLzAK
+  bitcoin.conf: dHhpbmRleD0xCnNlcnZlcj0xCnJwY3VzZXI9Q2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZQpycGNwYXNzd29yZD0xZXJqYW52aWVyMTk1NgpycGNiaW5kPTAuMC4wLjAKcnBjYWxsb3dpcD0wLjAuMC4wLzAKZXh0ZXJuYWxpcD0xOTguMjUxLjc2LjI0Cg==
 type: Opaque
 ---
 apiVersion: v1

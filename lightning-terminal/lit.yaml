@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: lit
+  name: lit-pvc
+  namespace: bitcoin
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lit-conf
+  namespace: bitcoin
+data:
+  lit.conf: I1tBcHBsaWNhdGlvbiBPcHRpb25zXQpsbmQubGlzdGVuPTAuMC4wLjA6OTczNQpsbmQucnBjbGlzdGVuPTAuMC4wLjA6MTAwMDkKbG5kLnJlc3RsaXN0ZW49MC4wLjAuMDo4MDgwCmxuZC5leHRlcm5hbGlwPTE5OC4yNTEuNzYuMjQKbG5kLmFsaWFzPXNjaG11Y2tlbGUKCiNbQml0Y29pbl0KbG5kLmJpdGNvaW4ubm9kZT1iaXRjb2luZApsbmQuYml0Y29pbi5hY3RpdmU9dHJ1ZQpsbmQuYml0Y29pbi5tYWlubmV0PXRydWUKCiNbQml0Y29pbmRdCmxuZC5iaXRjb2luZC5ycGNob3N0PWJpdGNvaW5kOjgzMzIKbG5kLmJpdGNvaW5kLnJwY3VzZXI9Q2hyaXN0aW5lTWFkZWxlaW5lT2RldHRlTGFsbG91ZXR0ZQpsbmQuYml0Y29pbmQucnBjcGFzcz0xZXJqYW52aWVyMTk1NgpsbmQuYml0Y29pbmQuem1xcHVicmF3YmxvY2s9dGNwOi8vYml0Y29pbmQ6MjgzMzIKbG5kLmJpdGNvaW5kLnptcXB1YnJhd3R4PXRjcDovL2JpdGNvaW5kOjI4MzMzCmxuZC5iaXRjb2luZC5lc3RpbWF0ZW1vZGU9Q09OU0VSVkFUSVZFCgojIEFwcGxpY2F0aW9uIE9wdGlvbnMKaHR0cHNsaXN0ZW49MC4wLjAuMDo4NDQzCnVpcGFzc3dvcmQ9dG9wc2VjcmV0CmxuZC1tb2RlPWludGVncmF0ZWQKCiMgTG5kCmxuZC5sbmRkaXI9fi8ubGl0CmxuZC5kZWJ1Z2xldmVsPWRlYnVnCgojIExvb3AKbG9vcC5sb29wb3V0bWF4cGFydHM9NQoKIyBQb29sCnBvb2wubmV3bm9kZXNvbmx5PXRydWUKCiMgRmFyYWRheQpmYXJhZGF5Lm1pbl9tb25pdG9yZWQ9NDhoCgojIEZhcmFkYXkgLSBiaXRjb2luCmZhcmFkYXkuY29ubmVjdF9iaXRjb2luPXRydWUKZmFyYWRheS5iaXRjb2luLmhvc3Q9Yml0Y29pbmQ6ODMzMgpmYXJhZGF5LmJpdGNvaW4udXNlcj1DaHJpc3RpbmVNYWRlbGVpbmVPZGV0dGVMYWxsb3VldHRlCmZhcmFkYXkuYml0Y29pbi5wYXNzd29yZD0xZXJqYW52aWVyMTk1Ngo=
+type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lit
+  namespace: bitcoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lit
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: lit
+    spec:
+      containers:
+      - image: lightninglabs/lightning-terminal:v0.12.4-alpha
+        imagePullPolicy: IfNotPresent
+        name: lit
+        ports:
+        - containerPort: 10009
+          protocol: TCP
+        - containerPort: 9735
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - name: lit-vol
+          mountPath: /root/.lit
+        - name: lit-conf
+          mountPath: "/root/.lit/lit.conf"
+          subPath: lit.conf
+          readOnly: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: lit-vol
+        persistentVolumeClaim:
+          claimName: lit-pvc
+      - name: lit-conf
+        secret:
+          secretName: lit-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lit
+  name: lit
+  namespace: bitcoin
+spec:
+  type: NodePort
+  selector:
+    app: lit
+  ports:
+  - name: rpc
+    port: 10009
+    targetPort: 10009
+    nodePort: 31109
+  - name: p2p
+    port: 9735
+    targetPort: 9735
+    nodePort: 31735
+  - name: rest
+    port: 8080
+    targetPort: 8080
+    nodePort: 31808
+  - name: ui
+    port: 8443
+    targetPort: 8443
+    nodePort: 31844

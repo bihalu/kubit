@@ -3,7 +3,7 @@
 ## github
 https://github.com/lightningnetwork/lnd  
 
-## sample-lnd.conf
+## sample lnd.conf
 https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf  
 
 ## convert lnd.conf to lnd-conf-secret.yaml

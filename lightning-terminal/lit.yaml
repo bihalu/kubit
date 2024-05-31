@@ -56,8 +56,11 @@ spec:
         - name: lit-vol
           mountPath: /root/.lit
         - name: lit-conf
-          mountPath: "/root/.lit/lit.conf"
+          mountPath: /root/.lit/lit.conf
           subPath: lit.conf
+          readOnly: true
+        - name: lit-tls
+          mountPath: /root/.lit
           readOnly: true
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
@@ -68,6 +71,9 @@ spec:
       - name: lit-conf
         secret:
           secretName: lit-conf
+      - name: lit-tls
+        secret:
+          secretName: lightning.schmuckele.nl-tls
 ---
 apiVersion: v1
 kind: Service
@@ -84,16 +90,16 @@ spec:
   - name: rpc
     port: 10009
     targetPort: 10009
-    nodePort: 31109
+    nodePort: 30109
   - name: p2p
     port: 9735
     targetPort: 9735
-    nodePort: 31735
+    nodePort: 30735
   - name: rest
     port: 8080
     targetPort: 8080
-    nodePort: 31808
+    nodePort: 30808
   - name: ui
     port: 8443
     targetPort: 8443
-    nodePort: 31844
+    nodePort: 30844

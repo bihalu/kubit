@@ -59,8 +59,13 @@ spec:
           mountPath: /root/.lit/lit.conf
           subPath: lit.conf
           readOnly: true
-        - name: lit-tls
-          mountPath: /root/.lit
+        - name: tls-crt
+          mountPath: /root/.lit/tls.crt
+          subPath: tls.crt
+          readOnly: true
+        - name: tls-key
+          mountPath: /root/.lit/tls.key
+          subPath: tls.key
           readOnly: true
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
@@ -71,7 +76,10 @@ spec:
       - name: lit-conf
         secret:
           secretName: lit-conf
-      - name: lit-tls
+      - name: tls-crt
+        secret:
+          secretName: lightning.schmuckele.nl-tls
+      - name: tls-key
         secret:
           secretName: lightning.schmuckele.nl-tls
 ---

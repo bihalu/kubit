@@ -13,6 +13,20 @@ spec:
       storage: 1Gi
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: lnd
+  name: lnd-pvc
+  namespace: bitcoin
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: lit-conf
@@ -54,7 +68,9 @@ spec:
         resources: {}
         volumeMounts:
         - name: lit-vol
-          mountPath: /root
+          mountPath: /root/.lit
+        - name: lnd-vol
+          mountPath: /root/.lnd
         - name: lit-conf
           mountPath: /root/.lit/lit.conf
           subPath: lit.conf
@@ -73,6 +89,9 @@ spec:
       - name: lit-vol
         persistentVolumeClaim:
           claimName: lit-pvc
+      - name: lnd-vol
+        persistentVolumeClaim:
+          claimName: lnd-pvc
       - name: lit-conf
         secret:
           secretName: lit-conf

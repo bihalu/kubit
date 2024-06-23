@@ -21,3 +21,10 @@ data:
 type: Opaque
 EOF
 ```
+
+## update/patch lit.conf
+
+```
+BASE64=$(cat lit.conf | base64 -w0)
+kubectl patch secret lit-conf -n bitcoin --patch="{\"data\": {\"lit.conf\": \"$BASE64\" }}"
+```

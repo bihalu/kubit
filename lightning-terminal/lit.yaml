@@ -54,7 +54,7 @@ spec:
         resources: {}
         volumeMounts:
         - name: lit-vol
-          mountPath: /root/.lit
+          mountPath: /root
         - name: lit-conf
           mountPath: /root/.lit/lit.conf
           subPath: lit.conf
